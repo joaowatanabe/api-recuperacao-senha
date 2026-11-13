@@ -7,5 +7,10 @@ export function criarRecuperacaoSenhaController(recuperacaoSenhaService) {
       await recuperacaoSenhaService.solicitar(req.body);
       res.json({ mensagem: MENSAGEM_SOLICITACAO });
     },
+
+    async redefinir(req, res) {
+      await recuperacaoSenhaService.redefinir(req.body);
+      res.json({ mensagem: 'Senha redefinida com sucesso.' });
+    },
   };
 }
