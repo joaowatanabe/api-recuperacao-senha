@@ -1,0 +1,23 @@
+meta {
+  name: 8 - Login com a senha nova
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {"email": "{{email}}", "senha": "{{novaSenha}}"}
+}
+
+assert {
+  res.status: eq 200
+}
+
+script:post-response {
+  bru.setVar("token", res.body.token);
+}

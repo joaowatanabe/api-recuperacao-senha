@@ -1,0 +1,19 @@
+meta {
+  name: 3 - Perfil (rota protegida)
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/perfil
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+assert {
+  res.status: eq 200
+}

@@ -1,0 +1,6 @@
+{
+  "version": "1",
+  "name": "API Recuperação de Senha",
+  "type": "collection",
+  "ignore": ["node_modules", ".git"]
+}
