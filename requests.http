@@ -1,0 +1,85 @@
+# Exemplos de chamadas para a demonstração.
+# Use com a extensão REST Client (VS Code) ou copie para o Insomnia/Postman.
+
+@baseUrl = http://localhost:3000
+@email = joao@exemplo.com
+
+### 1. Cadastrar usuário
+POST {{baseUrl}}/usuarios
+Content-Type: application/json
+
+{
+  "nome": "João Vicente",
+  "email": "{{email}}",
+  "senha": "Senha@123"
+}
+
+### 2. Login com a senha atual (guarda o token na variável "login")
+# @name login
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "senha": "Senha@123"
+}
+
+### 3. Rota protegida (usa o token do login acima)
+GET {{baseUrl}}/perfil
+Authorization: Bearer {{login.response.body.token}}
+
+### 4. Solicitar recuperação de senha
+# O link de pré-visualização do e-mail (Ethereal) aparece no console do servidor.
+POST {{baseUrl}}/recuperar-senha
+Content-Type: application/json
+
+{
+  "email": "{{email}}"
+}
+
+### 5. Solicitar recuperação com e-mail inexistente (mesma resposta)
+POST {{baseUrl}}/recuperar-senha
+Content-Type: application/json
+
+{
+  "email": "ninguem@exemplo.com"
+}
+
+### 6. Redefinir com senha fraca (400 com as regras que faltaram)
+POST {{baseUrl}}/redefinir-senha
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "codigo": "TROQUE_PELO_CODIGO",
+  "novaSenha": "fraca"
+}
+
+### 7. Redefinir senha (troque o código pelo recebido no e-mail)
+POST {{baseUrl}}/redefinir-senha
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "codigo": "TROQUE_PELO_CODIGO",
+  "novaSenha": "NovaSenha#2026"
+}
+
+### 8. Login com a senha nova
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "senha": "NovaSenha#2026"
+}
+
+### 9. Reutilizar o mesmo código (deve falhar: uso único)
+POST {{baseUrl}}/redefinir-senha
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "codigo": "TROQUE_PELO_CODIGO",
+  "novaSenha": "OutraSenha#2026"
+}
