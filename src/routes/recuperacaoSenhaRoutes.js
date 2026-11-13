@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { limitarRequisicoes } from '../middlewares/limitarRequisicoes.js';
 import { validar } from '../middlewares/validar.js';
 import {
   redefinirSenhaSchema,
@@ -7,7 +8,19 @@ import {
 
 export function criarRecuperacaoSenhaRoutes(recuperacaoSenhaController) {
   const rotas = Router();
-  rotas.post('/recuperar-senha', validar(solicitarRecuperacaoSchema), recuperacaoSenhaController.solicitar);
-  rotas.post('/redefinir-senha', validar(redefinirSenhaSchema), recuperacaoSenhaController.redefinir);
+
+  rotas.post(
+    '/recuperar-senha',
+    limitarRequisicoes(),
+    validar(solicitarRecuperacaoSchema),
+    recuperacaoSenhaController.solicitar,
+  );
+  rotas.post(
+    '/redefinir-senha',
+    limitarRequisicoes(),
+    validar(redefinirSenhaSchema),
+    recuperacaoSenhaController.redefinir,
+  );
+
   return rotas;
 }
