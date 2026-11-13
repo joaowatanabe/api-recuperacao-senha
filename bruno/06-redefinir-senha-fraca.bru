@@ -1,0 +1,19 @@
+meta {
+  name: 6 - Redefinir com senha fraca (400)
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/redefinir-senha
+  body: json
+  auth: none
+}
+
+body:json {
+  {"email": "{{email}}", "codigo": "{{codigo}}", "novaSenha": "fraca"}
+}
+
+assert {
+  res.status: eq 400
+}
