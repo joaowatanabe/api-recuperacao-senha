@@ -14,5 +14,13 @@ export function criarUsuarioService(usuarioRepository) {
     return dadosPublicos(usuarioRepository.buscarPorId(id));
   }
 
-  return { cadastrar };
+  function buscarPerfil(id) {
+    const usuario = usuarioRepository.buscarPorId(id);
+    if (!usuario) {
+      throw new AppError('Usuário não encontrado.', 404);
+    }
+    return dadosPublicos(usuario);
+  }
+
+  return { cadastrar, buscarPerfil };
 }
