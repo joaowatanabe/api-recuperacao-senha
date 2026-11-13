@@ -26,7 +26,26 @@ export function criarUsuarioRepository(db) {
              codigo_recuperacao_tentativas = 0
        WHERE id = ?
     `),
+    registrarTentativaInvalida: db.prepare(`
+      UPDATE usuarios
+         SET codigo_recuperacao_tentativas = codigo_recuperacao_tentativas + 1
+       WHERE id = ?
+   RETURNING codigo_recuperacao_tentativas AS tentativas
+    `),
+    apagarCodigoRecuperacao: db.prepare(`
+      UPDATE usuarios
+         SET codigo_recuperacao_hash = NULL,
+             codigo_recuperacao_expira_em = NULL,
+             codigo_recuperacao_tentativas = 0
+       WHERE id = ?
+    `),
+    atualizarSenha: db.prepare('UPDATE usuarios SET senha_hash = ? WHERE id = ?'),
   };
+
+  const atualizarSenhaEApagarCodigo = db.transaction((id, senhaHash) => {
+    consultas.atualizarSenha.run(senhaHash, id);
+    consultas.apagarCodigoRecuperacao.run(id);
+  });
 
   return {
     criar({ nome, email, senhaHash }) {
@@ -38,5 +57,10 @@ export function criarUsuarioRepository(db) {
     salvarCodigoRecuperacao(id, { codigoHash, expiraEm }) {
       consultas.salvarCodigoRecuperacao.run(codigoHash, expiraEm, id);
     },
+    registrarTentativaInvalida: (id) => consultas.registrarTentativaInvalida.get(id).tentativas,
+    apagarCodigoRecuperacao(id) {
+      consultas.apagarCodigoRecuperacao.run(id);
+    },
+    atualizarSenhaEApagarCodigo,
   };
 }
