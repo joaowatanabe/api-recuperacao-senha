@@ -1,0 +1,17 @@
+{
+  "name": "api-recuperacao-senha",
+  "version": "1.0.0",
+  "description": "API REST com cadastro, login JWT e recuperação de senha por código enviado por e-mail",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test"
+  },
+  "author": "João Vicente Watanabe",
+  "license": "MIT"
+}
