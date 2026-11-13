@@ -15,12 +15,16 @@ function codigoEstaAtivo({ hash, expiraEm }) {
 
 export function criarRecuperacaoSenhaService({ usuarioRepository, emailService }) {
   async function solicitar({ email }) {
+    // O hash é calculado antes de saber se o usuário existe para que o tempo de
+    // resposta seja parecido nos dois casos.
+    const codigo = gerarCodigoRecuperacao();
+    const codigoHash = await gerarHash(codigo);
+
     const usuario = usuarioRepository.buscarPorEmail(email);
     if (!usuario) return;
 
-    const codigo = gerarCodigoRecuperacao();
     usuarioRepository.salvarCodigoRecuperacao(usuario.id, {
-      codigoHash: await gerarHash(codigo),
+      codigoHash,
       expiraEm: Date.now() + CODIGO_RECUPERACAO.VALIDADE_MINUTOS * MINUTO_EM_MS,
     });
 
